@@ -1,0 +1,28 @@
+
+@import '~antd/dist/antd.css';
+#app {
+    display: flex;
+    height: 100vh;
+}
+
+.login-form {
+    width: 320px;
+}
+.login-form-forgot {
+    float: right;
+}
+.login-form-button {
+    width: 100%;
+}
+
+.router {
+    display: flex;
+    flex: 1;
+}
+
+.login {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+}
