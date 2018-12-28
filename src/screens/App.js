@@ -13,10 +13,12 @@ const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
 
 import Containers from './docker/containers';
+import Images from './docker/images';
+
 const routes = [{
-    name: 'index',
-    path: '/',
-    component: () => <div>welcome</div>
+    name: 'images',
+    path: '/images',
+    component: Images
 }, {
     name: 'containers',
     path: '/containers',
@@ -35,7 +37,10 @@ class App extends React.Component {
     render() {
         const {login} = this.props;
         const containers = this.getRoute('containers');
-        const index = this.getRoute('index');
+        const images = this.getRoute('images');
+        const routers = routes.map(route => {
+            return (<Route path={route.path} component={route.component}/>)
+        });
         return (
             <Layout>
                 <Header className="header">
@@ -55,7 +60,12 @@ class App extends React.Component {
                                         <span>Containers</span>
                                     </Link>
                                 </Menu.Item>
-                                <Menu.Item key="2">Images</Menu.Item>
+                                <Menu.Item key="2">
+                                    <Link to={images.path}>
+                                        <Icon type="idcard"/>
+                                        <span>Images</span>
+                                    </Link>
+                                </Menu.Item>
                             </SubMenu>
                         </Menu>
                     </Sider>
@@ -65,7 +75,7 @@ class App extends React.Component {
                         }}
                         >
                             <Switch>
-                                <Route path={containers.path} component={containers.component}/>
+                                {routers}
                             </Switch>
                         </Content>
                     </Layout>

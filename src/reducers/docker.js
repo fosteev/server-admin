@@ -13,7 +13,13 @@ export default function docker(state = initialState, action) {
             });
         case GET_IMAGES:
             return Object.assign({}, state, {
-                images: action.images
+                images: action.images.map(image => {
+                    image['name'] = image.RepoTags[0];
+                    image['date'] = new Date(image.Created * 1000);
+                    image['megabyte'] = (image.Size / 1000 / 1000).toFixed(0);
+                    image['id'] = image.Id.split(':')[1].slice(0, 6);
+                    return image;
+                })
             });
         default:
             return state;

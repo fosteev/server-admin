@@ -1,7 +1,7 @@
 export const GET_CONTAINERS = 'GET_CONTAINERS',
     GET_IMAGES = 'GET_IMAGES';
 
-const url = 'http://localhost:3000/'
+const url = 'http://localhost:3000'
 
 import {stringParams} from './сonfig';
 
@@ -43,4 +43,8 @@ export function reqContainers(params, action) {
             console.log(response);
         })
     };
+}
+
+export function reqImages(params, action) {
+    return dispatch => request('/images').then(response => dispatch(getImages(response)));
 }

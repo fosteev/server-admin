@@ -28,6 +28,11 @@ export function stringParams(params) {
     for (const key in params) {
         arr.push(`${key}=${params[key]}`)
     }
+
+    if  (arr.length === 0) {
+        return '';
+    }
+
     return `?${arr.join('&')}`;
 }
 
