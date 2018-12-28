@@ -4,7 +4,7 @@ import {
 } from 'react-router-dom';
 import {connect} from "react-redux";
 import {reqImages} from '../../../actions/docker';
-import {Table, Divider, Tag} from 'antd';
+import {Table, Divider, Tag, Button} from 'antd';
 
 
 const columns = [{
@@ -42,7 +42,11 @@ const columns = [{
     title: 'Created',
     key: 'date',
     dataIndex: 'date',
-    render: date => (<p>dasdasd</p>),
+    render: date => (<p>{date.getDay()}-{date.getMonth()}-{date.getFullYear()}</p>),
+}, {
+    title: 'Actions',
+    key: 'actions',
+    render: () => <Button type="primary">start</Button>
 }];
 
 
@@ -55,7 +59,7 @@ class Images extends React.Component {
         return (
             <div>
                 <h1>Images</h1>
-                <Table columns={columns} dataSource={this.props.docker.images}/>
+                <Table pagination={false} columns={columns} dataSource={this.props.docker.images}/>
             </div>);
     }
 }
