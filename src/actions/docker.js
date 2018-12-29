@@ -38,11 +38,7 @@ function request(route, params) {
 }
 
 export function reqContainers(params, action) {
-    return dispatch => {
-        request('/containers').then(response => {
-            console.log(response);
-        })
-    };
+    return dispatch => request('/containers').then(response => dispatch(getContainers(response)));
 }
 
 export function reqImages(params, action) {

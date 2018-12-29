@@ -4,22 +4,60 @@ import {
 } from 'react-router-dom';
 import {connect} from "react-redux";
 import {reqContainers} from '../../../actions/docker';
+import {Table, Divider, Tag, Button} from 'antd';
 
-
-class Containers extends React.Component {
+class Images extends React.Component {
     componentDidMount() {
-        console.log('willmount');
         this.props.getContainers();
     }
 
     render() {
-        return (<div>Accounts</div>);
+        return (
+            <div>
+                <h1>Containers</h1>
+                <Table pagination={false}
+                       columns={[{
+                           title: 'Container ID',
+                           dataIndex: 'id',
+                           key: 'id',
+                       }, {
+                           title: 'Name',
+                           dataIndex: 'name',
+                           key: 'name'
+                       }, {
+                           title: 'Image',
+                           dataIndex: 'Image',
+                           key: 'image'
+                       }, {
+                           title: 'Command',
+                           dataIndex: 'Command',
+                           key: 'command'
+                       }, {
+                           title: 'Created',
+                           key: 'date',
+                           dataIndex: 'date',
+                           render: date => (<p>{date.getDay()}-{date.getMonth()}-{date.getFullYear()}</p>),
+                       }, {
+                           title: 'State',
+                           dataIndex: 'State',
+                           key: 'state'
+                       }, {
+                           title: 'Status',
+                           dataIndex: 'Status',
+                           key: 'status'
+                       }, {
+                           title: 'Ports',
+                           dataIndex: 'ports',
+                           key: 'state'
+                       }]}
+                       dataSource={this.props.docker.containers}/>
+            </div>);
     }
 }
 
 const mapStateToProps = state => {
     return {
-        accounts: state.accounts
+        docker: state.docker
     }
 }
 
@@ -30,4 +68,4 @@ const mapDispatchToProps = dispatch => {
 };
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(Containers);
+export default connect(mapStateToProps, mapDispatchToProps)(Images);
