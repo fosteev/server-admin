@@ -48,3 +48,12 @@ export function reqContainers(params, action) {
 export function reqImages(params, action) {
     return dispatch => request('/images').then(response => dispatch(getImages(response)));
 }
+
+export function startContainer(params) {
+    console.log(params);
+    return dispatch => {
+        request(`/containers${stringParams(params)}`).then(response => {
+            console.log(response);
+        })
+    }
+}
