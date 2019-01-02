@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
     Link, Switch, Route
 } from 'react-router-dom';
 
 import {
-    Layout, Menu, Breadcrumb, Icon,
+    Layout, Menu, Breadcrumb, Icon, message
 } from 'antd';
 
 const { SubMenu } = Menu;
@@ -14,8 +14,13 @@ const { Header, Content, Sider } = Layout;
 
 import Containers from './docker/containers';
 import Images from './docker/images';
+import Dashboard from './dashboard';
 
 const routes = [{
+    name: 'dashboard',
+    path: '/dashboard',
+    component: Dashboard
+}, {
     name: 'images',
     path: '/images',
     component: Images
@@ -34,12 +39,28 @@ class App extends React.Component {
         return null;
     }
 
+    componentWillReceiveProps(nextProps) {
+        const {state} = nextProps;
+        const {messageBox, isLoading} = state;
+
+        if (isLoading) {
+            message.loading('Response...', 5000);
+        } else {
+            message.destroy();
+        }
+
+        if (messageBox.status) {
+            message.error(messageBox.text);
+        }
+    }
+
     render() {
         const {login} = this.props;
         const containers = this.getRoute('containers');
         const images = this.getRoute('images');
-        const routers = routes.map(route => {
-            return (<Route path={route.path} component={route.component}/>)
+        const dashboard = this.getRoute('dashboard');
+        const routers = routes.map((route, index) => {
+            return (<Route key={index} path={route.path} component={route.component}/>)
         });
         return (
             <Layout>
@@ -49,21 +70,25 @@ class App extends React.Component {
                     <Sider width={200} style={{ background: '#fff' }}>
                         <Menu
                             mode="inline"
-                            defaultSelectedKeys={['1']}
-                            defaultOpenKeys={['sub1']}
                             style={{ height: '100%', borderRight: 0 }}
                         >
-                            <SubMenu key="sub1" title={<span><Icon type="user" />Docker</span>}>
-                                <Menu.Item key="1">
+                            <Menu.Item key={dashboard.name}>
+                                <Link to={dashboard.path}>
+                                    <FontAwesomeIcon icon={['fas', 'desktop']} />
+                                    <span> Dashboard</span>
+                                </Link>
+                            </Menu.Item>
+                            <SubMenu key="docker" title={<span><FontAwesomeIcon icon={['fab', 'docker']} /> Docker</span>}>
+                                <Menu.Item key={containers.name}>
                                     <Link to={containers.path}>
-                                        <Icon type="idcard"/>
-                                        <span>Containers</span>
+                                        <FontAwesomeIcon icon={['fas', 'server']} />
+                                        <span> Containers</span>
                                     </Link>
                                 </Menu.Item>
-                                <Menu.Item key="2">
+                                <Menu.Item key={images.name}>
                                     <Link to={images.path}>
-                                        <Icon type="idcard"/>
-                                        <span>Images</span>
+                                        <FontAwesomeIcon icon={['fas', 'save']} />
+                                        <span> Images</span>
                                     </Link>
                                 </Menu.Item>
                             </SubMenu>
@@ -86,7 +111,8 @@ class App extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        login: state.login
+        login: state.login,
+        state: state.state
     }
 }
 
