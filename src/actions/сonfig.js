@@ -1,4 +1,5 @@
 const backend_url = `http://acdc.pilot-gps.ru:30197/`;
+export const server_api_url = 'http://localhost:3000/';
 
 export const REQUEST = 'REQUEST', RESPONSE = 'RESPONSE', FAIL = 'FAIL', UPDATE_STATE = 'UPDATE_STATE';
 

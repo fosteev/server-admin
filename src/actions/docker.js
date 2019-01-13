@@ -1,9 +1,9 @@
 export const GET_CONTAINERS = 'GET_CONTAINERS',
     GET_IMAGES = 'GET_IMAGES';
 
-const url = 'http://localhost:3000'
+const url = 'http://localhost:4000/docker'
 
-import {stringParams} from './сonfig';
+import {stringParams, Fetch, server_api_url} from './сonfig';
 
 export function getContainers(containers) {
     return {
@@ -19,6 +19,10 @@ export function getImages(images) {
     }
 }
 
+function dockerFetch() {
+    return new Fetch(server_api_url);
+}
+
 function request(route, params) {
     return new Promise((resolve, reject) => {
         fetch(`${url}${route}${stringParams(params)}`, {
@@ -30,9 +34,9 @@ function request(route, params) {
             });
 
         }).catch((error) => {
-                console.log('fetch catch error: ', error);
-                //return dispatch(onShowFailResponseFromServer());
-            })
+            console.log('fetch catch error: ', error);
+            //return dispatch(onShowFailResponseFromServer());
+        })
 
     })
 }
@@ -45,11 +49,18 @@ export function reqImages(params, action) {
     return dispatch => request('/images').then(response => dispatch(getImages(response)));
 }
 
+import {updateMessageBoxState, onLoading, offLoading} from './state';
+
 export function startContainer(params) {
-    console.log(params);
     return dispatch => {
-        request(`/containers${stringParams(params)}`).then(response => {
-            console.log(response);
+        dispatch(onLoading());
+        dockerFetch().request('/containers', 'POST', params).then(resp => {
+            dispatch(offLoading());
+            console.log(resp);
+
+        }).catch(res => {
+            dispatch(offLoading());
+            dispatch(updateMessageBoxState(res.status, res.text));
         })
     }
 }

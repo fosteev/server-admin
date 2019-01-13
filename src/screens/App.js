@@ -15,6 +15,7 @@ const { Header, Content, Sider } = Layout;
 import Containers from './docker/containers';
 import Images from './docker/images';
 import Dashboard from './dashboard';
+import Git from './git';
 
 const routes = [{
     name: 'dashboard',
@@ -28,6 +29,10 @@ const routes = [{
     name: 'containers',
     path: '/containers',
     component: Containers
+}, {
+    name: 'git',
+    path: '/git',
+    component: Git
 }]
 
 class App extends React.Component {
@@ -59,6 +64,7 @@ class App extends React.Component {
         const containers = this.getRoute('containers');
         const images = this.getRoute('images');
         const dashboard = this.getRoute('dashboard');
+        const git = this.getRoute('git');
         const routers = routes.map((route, index) => {
             return (<Route key={index} path={route.path} component={route.component}/>)
         });
@@ -92,13 +98,16 @@ class App extends React.Component {
                                     </Link>
                                 </Menu.Item>
                             </SubMenu>
+                            <Menu.Item key={git.name}>
+                                <Link to={git.path}>
+                                    <FontAwesomeIcon icon={['fab', 'git']} />
+                                    <span> Git</span>
+                                </Link>
+                            </Menu.Item>
                         </Menu>
                     </Sider>
                     <Layout style={{ padding: '0 24px 24px' }}>
-                        <Content style={{
-                            background: '#fff', padding: 24, margin: 0, minHeight: 280,
-                        }}
-                        >
+                        <Content>
                             <Switch>
                                 {routers}
                             </Switch>

@@ -1,4 +1,4 @@
-import {SET_MESSAGE, SET_LOADING, GET_SYSTEM} from '../actions/state';
+import {SET_MESSAGE, SET_LOADING, GET_SYSTEM, GET_CONFIG} from '../actions/state';
 const initialState = {
     messageBox: {
         status: null,
@@ -11,6 +11,11 @@ const initialState = {
         release: null,
         homedir: null,
         upTime: null
+    },
+    config: {
+        headers: null,
+        port: null,
+        path: null
     }
 };
 
@@ -35,6 +40,14 @@ export default function docker(state = initialState, action) {
                         release: action.release,
                         homedir: action.homedir,
                         upTime: action.upTime
+                    }
+                }}
+        case GET_CONFIG:
+            return {...state, ...{
+                    config: {
+                        headers: action.headers,
+                        port: action.port,
+                        path: action.path
                     }
                 }}
         default:

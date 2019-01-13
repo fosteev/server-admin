@@ -1,5 +1,7 @@
 export const SET_MESSAGE = 'SET_MESSAGE',
-    SET_LOADING = 'SET_LOADING', GET_SYSTEM = 'GET_SYSTEM';
+    SET_LOADING = 'SET_LOADING',
+    GET_SYSTEM = 'GET_SYSTEM',
+    GET_CONFIG = 'GET_CONFIG';
 
 
 export function updateMessageBoxState(status, text, params) {
@@ -36,10 +38,10 @@ export function offLoading() {
     }
 }
 
-import {Fetch} from "./сonfig";
+import {Fetch, server_api_url} from "./сonfig";
 
 function stateFetch() {
-    return new Fetch('http://localhost:3000/')
+    return new Fetch(server_api_url)
 }
 
 export function getSystem() {
@@ -52,6 +54,19 @@ export function getSystem() {
                 release: resp.release,
                 upTime: resp.upTime,
                 homedir: resp.homedir
+            }))
+    }
+}
+
+export function getConfiguration() {
+    return dispatch => {
+        stateFetch()
+            .request('/config', 'GET')
+            .then(resp => dispatch({
+                type: GET_CONFIG,
+                headers: resp.headers,
+                path: resp.path,
+                port: resp.port
             }))
     }
 }

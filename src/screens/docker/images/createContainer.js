@@ -23,11 +23,15 @@ class DrawerForm extends React.Component {
     };
 
     handleSubmit = (e) => {
+        console.log('handler');
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
-            if (!err) {
+            console.log('validate');
+            console.log(err);
+            if (err) {
                 throw new Error('Received values of form');
             }
+            console.log(values);
             this.props.startContainer(values)
         });
     }
@@ -112,5 +116,5 @@ const mapDispatchToProps = dispatch => {
     })
 };
 
-const CreateContainer = Form.create()(connect(mapStateToProps, mapDispatchToProps)(DrawerForm));
-export default CreateContainer;
+const CreateContainer = Form.create()(DrawerForm);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateContainer);
