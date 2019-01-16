@@ -61,7 +61,7 @@ export function getSystem() {
 export function getConfiguration() {
     return dispatch => {
         stateFetch()
-            .request('/config', 'GET')
+            .request('config', 'GET')
             .then(resp => dispatch({
                 type: GET_CONFIG,
                 headers: resp.headers,

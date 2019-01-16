@@ -51,10 +51,29 @@ p {
     flex-direction: row;
 }
 
-.dashboard-os {
+.dashboard-config {
+    width: 600px;
+}
+
+.row {
+    display: flex;
+    background: rgba(236,239,241,.38);
+    height: 48px;
+}
+
+.row-content {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+}
+
+.row-left {
+    display: flex;
     flex: 1;
 }
 
-.dashboard-config {
-    flex: 4;
+.row-right {
+    display: flex;
+    flex: 1;
 }
