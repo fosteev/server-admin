@@ -1,30 +1,8 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {getProjects} from '../../actions/git';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Table, Button } from 'antd';
-
-const data = [{
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-}, {
-    key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-}, {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-}, {
-    key: '4',
-    name: 'Jim Red',
-    age: 32,
-    address: 'London No. 2 Lake Park',
-}];
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {Table, Button} from 'antd';
 
 class Git extends React.Component {
     componentWillMount() {
@@ -48,6 +26,13 @@ class Git extends React.Component {
         });
     }
 
+    onLeftClick(record) {
+        const {name} = record;
+        this.props.history.push(`git:${name}`, {
+            project: name
+        });
+    }
+
 
     render() {
         const columns = [{
@@ -55,20 +40,30 @@ class Git extends React.Component {
             dataIndex: 'name',
             key: 'name'
         }];
+        console.log(this.props.store.projects);
         return (
             <div>
                 <h1>Git in project</h1>
                 <div className="table-operations">
                     <Button type={'primary'} icon="download"> Clone </Button>
                 </div>
-                <Table pagination={false}
-                       columns={columns}
-                       dataSource={this.props.store.projects.map(item => {
-                           return {
-                               name: item
+                <div className="mat-card">
+                    <Table pagination={false}
+                           onRow={(record, rowIndex) => {
+                               return {
+                                   onClick: (event) => this.onLeftClick(record, event)
+                               };
+                           }}
+                           columns={columns}
+                           dataSource={this.props.store.projects.repository ? this.props.store.projects.repository.map(item => {
+                               return {
+                                   name: item
+                               }
+                           }) : []
                            }
-                       })}
-                       onChange={this.handleChange} />
+                           onChange={this.handleChange}/>
+                </div>
+
             </div>
         )
     }

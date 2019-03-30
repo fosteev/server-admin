@@ -16,6 +16,7 @@ import Containers from './docker/containers';
 import Images from './docker/images';
 import Dashboard from './dashboard';
 import Git from './git';
+import GitProject from './git/project';
 
 const routes = [{
     name: 'dashboard',
@@ -33,6 +34,10 @@ const routes = [{
     name: 'git',
     path: '/git',
     component: Git
+}, {
+    name: 'git',
+    path: '/git:name',
+    component: GitProject
 }]
 
 class App extends React.Component {
@@ -68,6 +73,11 @@ class App extends React.Component {
         const routers = routes.map((route, index) => {
             return (<Route key={index} path={route.path} component={route.component}/>)
         });
+        let path = this.props.location.pathname.replace('/', '');
+        const searchIndex = path.search(':');
+        if (searchIndex !== -1) {
+            path = path.slice(0, searchIndex);
+        }
         return (
             <Layout>
                 <Header className="header">
@@ -76,6 +86,7 @@ class App extends React.Component {
                     <Sider width={200} style={{ background: '#fff' }}>
                         <Menu
                             mode="inline"
+                            defaultSelectedKeys={[path]}
                             style={{ height: '100%', borderRight: 0 }}
                         >
                             <Menu.Item key={dashboard.name}>
