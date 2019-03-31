@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {
-    Drawer, Form, Button, Col, Row, Input, Select, DatePicker, Icon, InputNumber
+    Drawer, Form, Button, Col, Row, Input, Select, DatePicker, Icon, InputNumber, message
 } from 'antd';
 import {connect} from "react-redux";
 import {startContainer} from '../../../actions/docker';
@@ -8,7 +8,10 @@ import {style} from './style';
 
 
 class DrawerForm extends React.Component {
-    state = {visible: false};
+    state = {
+        actionMessage: '',
+        visible: false
+    };
 
     showDrawer = () => {
         this.setState({
@@ -23,15 +26,11 @@ class DrawerForm extends React.Component {
     };
 
     handleSubmit = (e) => {
-        console.log('handler');
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
-            console.log('validate');
-            console.log(err);
             if (err) {
                 throw new Error('Received values of form');
             }
-            console.log(values);
             this.props.startContainer(values)
         });
     }
@@ -78,7 +77,7 @@ class DrawerForm extends React.Component {
                         <Row gutter={16}>
                             <Col span={12}>
                                 <Form.Item label="container port">
-                                    {getFieldDecorator('container_port', {
+                                    {getFieldDecorator('inPort', {
                                         rules: [{required: true, message: 'Please enter container port'}],
                                     })(
                                         <InputNumber  placeholder="Please enter container port"/>
@@ -87,7 +86,7 @@ class DrawerForm extends React.Component {
                             </Col>
                             <Col span={12}>
                                 <Form.Item label="exposed_port">
-                                    {getFieldDecorator('exposed_port', {
+                                    {getFieldDecorator('outPort', {
                                         rules: [{required: true, message: 'Please enter exposed port'}],
                                     })(<InputNumber placeholder="Please enter exposed port"/>)}
                                 </Form.Item>

@@ -1,72 +1,35 @@
-export const SET_MESSAGE = 'SET_MESSAGE',
-    SET_LOADING = 'SET_LOADING',
-    GET_SYSTEM = 'GET_SYSTEM',
-    GET_CONFIG = 'GET_CONFIG';
+export const NOTIFICATION = 'NOTIFICATION',
+    CLOSE_NOTIFICATION = 'CLOSE_NOTIFICATION',
+    OPEN_NOTIFICATION = 'OPEN_NOTIFICATION',
+    CHANGE_FORM_STATE = 'CHANGE_FORM_STATE';
 
-
-export function updateMessageBoxState(status, text, params) {
+export function notification(title, text, index) {
     return {
-        type: SET_MESSAGE,
-        status: status,
-        text: text,
-        params: params
+        type: NOTIFICATION,
+        index: index,
+        title: title,
+        text: text
     }
 }
 
-export function setMessageBoxState(status, text, params) {
-    return dispatch => dispatch(updateMessageBoxState(status, text, params))
-}
-
-export function setMessageBox(resp) {
-    switch (resp.status) {
-        case 404:
-            return updateMessageBoxState(404, 'Not found page');
-    }
-}
-
-export function onLoading() {
+export function closeNotification(index) {
     return {
-        type: SET_LOADING,
-        isLoading: true
+        type: CLOSE_NOTIFICATION,
+        index: index
     }
 }
 
-export function offLoading() {
+export function openNotification(index) {
     return {
-        type: SET_LOADING,
-        isLoading: false
+        type: OPEN_NOTIFICATION,
+        index: index
     }
 }
 
-import {Fetch, server_api_url} from "./сonfig";
-
-function stateFetch() {
-    return new Fetch(server_api_url)
-}
-
-export function getSystem() {
-    return dispatch => {
-        stateFetch()
-            .request('', 'GET')
-            .then(resp => dispatch({
-                type: GET_SYSTEM,
-                platform: resp.platform,
-                release: resp.release,
-                upTime: resp.upTime,
-                homedir: resp.homedir
-            }))
-    }
-}
-
-export function getConfiguration() {
-    return dispatch => {
-        stateFetch()
-            .request('config', 'GET')
-            .then(resp => dispatch({
-                type: GET_CONFIG,
-                headers: resp.headers,
-                path: resp.path,
-                port: resp.port
-            }))
+export function showForm({name, isVisible}) {
+    return {
+        type: CHANGE_FORM_STATE,
+        name: name,
+        visible: isVisible,
     }
 }

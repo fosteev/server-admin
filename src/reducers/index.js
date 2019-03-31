@@ -2,14 +2,18 @@ import {combineReducers} from 'redux';
 import {routerReducer} from 'react-router-redux';
 
 import login from './login';
-import docker from './docker';
 import state from './state';
+import languages from './languages';
+import themes from './themes';
 import git from './git';
+import docker from './docker';
 
 export default combineReducers({
     routing: routerReducer,
     login,
-    docker,
     state,
-    git
+    languages,
+    themes,
+    git,
+    docker
 });
