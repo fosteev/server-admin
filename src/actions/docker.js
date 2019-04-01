@@ -103,7 +103,7 @@ export function stopContainer(container) {
             .then(resp => {
                 message.destroy();
                 message.success('Container has been stop, id: ' + resp, 5);
-                dispatch(responseContainer(resp));
+                dispatch(responseContainer(resp));e
                 dispatch(reqContainers());
             });
     }

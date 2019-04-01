@@ -43,7 +43,6 @@ class Images extends React.Component {
     }
 
     render() {
-        console.log(this.props.docker.isRequestContainers);
         return (
             <div className={'mat-card'}>
                 <h1>Containers</h1>

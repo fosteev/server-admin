@@ -39,6 +39,12 @@ const initialState = {
                 .ant-notification-notice-close {
                     color: ${this.aniBaseColor}b5;
                 }
+                .ant-table-thead > tr > th, .ant-table-tbody > tr > td {
+                    color: ${this.aniBaseColor};
+                }
+                .ant-table-thead > tr > th {
+                    background: ${this.baseColor};
+                }
             `
         }
     }, {
@@ -103,6 +109,15 @@ const initialState = {
             }
             .ant-form-item-control {
                 color: ${this.aniBaseColor};
+            }
+            .mat-card {
+                background: ${this.secondBaseColor};
+            }
+            .ant-table-thead > tr > th, .ant-table-tbody > tr > td {
+                color: ${this.aniBaseColor};
+            }
+            .ant-table-thead > tr > th {
+                background: ${this.baseColor};
             }
             `
         }

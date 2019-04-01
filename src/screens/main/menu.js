@@ -20,7 +20,6 @@ class MenuApp extends React.Component {
     }
 
     updatePath() {
-        console.log(location.pathname);
         this.setState({
             path: location.pathname
         })
