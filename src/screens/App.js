@@ -20,23 +20,32 @@ import MenuApp from './main/menu';
 import Notification from '../components/notification';
 import Images from './docker/images';
 import Containers from './docker/containers';
+import Git from './git';
+import GitProject from './git/project';
 
-import Map from './map';
 import {request} from "../actions/main";
 import {login} from "../actions/login";
 
 const routes = [{
-    name: 'Map',
-    path: '/map',
-    component: Map
-}, {
     name: 'Images',
     path: '/images',
+    isMenuItem: true,
     component: Images
 }, {
     name: 'Containers',
     path: '/containers',
+    isMenuItem: true,
     component: Containers
+}, {
+    name: 'Git',
+    path: '/git',
+    isMenuItem: true,
+    component: Git
+}, {
+    name: 'git',
+    path: '/git:name',
+    isMenuItem: false,
+    component: GitProject
 }]
 
 class App extends React.Component {
@@ -79,7 +88,7 @@ class App extends React.Component {
             <HeaderApp/>
             <Layout>
                 <Sider width={200}>
-                    <MenuApp router={routes}/>
+                    <MenuApp router={routes.filter(route => route.isMenuItem)}/>
                 </Sider>
                 <Layout style={{padding: '0 24px 24px'}}>
                     <Breadcrumb style={{margin: '16px 0'}}>

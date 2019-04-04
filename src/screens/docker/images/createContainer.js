@@ -40,7 +40,7 @@ class DrawerForm extends React.Component {
         return (
             <div>
                 <Button type="primary" onClick={this.showDrawer}>
-                    <Icon type="plus"/> start container
+                    <Icon type="plus"/> start
                 </Button>
                 <Drawer
                     title="Create a new container"

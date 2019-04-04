@@ -119,6 +119,13 @@ const initialState = {
             .ant-table-thead > tr > th {
                 background: ${this.baseColor};
             }
+            .ant-tag-green {
+                background: ${this.baseColor};
+            }
+            .ant-btn-dashed {
+                background: ${this.baseColor};
+                color: ${this.aniBaseColor};
+            }
             `
         }
     }, {
