@@ -41,6 +41,7 @@ class Containers extends React.Component {
             <div className={'mat-card'}>
                 <h1>Images</h1>
                 <Table pagination={false}
+                       bordered
                        loading={this.props.docker.isRequestImages}
                        columns={[{
                            title: 'Image ID',
