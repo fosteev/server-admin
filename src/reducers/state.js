@@ -1,55 +1,70 @@
-import {SET_MESSAGE, SET_LOADING, GET_SYSTEM, GET_CONFIG} from '../actions/state';
+import {
+    NOTIFICATION,
+    CLOSE_NOTIFICATION,
+    OPEN_NOTIFICATION,
+    CHANGE_FORM_STATE
+} from '../actions/state';
+
+import {
+    FAIL_LOGIN
+} from "../actions/login";
+
 const initialState = {
-    messageBox: {
-        status: null,
-        params: {},
-        text: null
+    notifications: [],
+    form: {
+        name: '',
+        visible: false
     },
-    isLoading: false,
-    system: {
-        platform: null,
-        release: null,
-        homedir: null,
-        upTime: null
-    },
-    config: {
-        headers: null,
-        port: null,
-        path: null
-    }
+    failText: ''
 };
 
-export default function docker(state = initialState, action) {
+export default function state(state = initialState, action) {
     switch (action.type) {
-        case SET_MESSAGE:
+        case NOTIFICATION:
+            const msg = {
+                index: action.index,
+                close: false,
+                title: action.title,
+                text: action.text,
+                isOpen: false
+            }
             return Object.assign({}, state, {
-                messageBox: {
-                    status: action.status,
-                    params: action.params,
-                    text: action.text
-                }
+                notifications: state.notifications.concat([msg])
             });
-        case SET_LOADING:
+        case CLOSE_NOTIFICATION: {
             return Object.assign({}, state, {
-                isLoading: action.isLoading
+                notifications: state.notifications.map(notification => {
+                    if (notification.index === action.index) {
+                        notification.close = true;
+                        notification.isOpen = false;
+                    }
+                    return notification;
+                })
             })
-        case GET_SYSTEM:
-            return {...state, ...{
-                    system: {
-                        platform: action.platform,
-                        release: action.release,
-                        homedir: action.homedir,
-                        upTime: action.upTime
+        }
+        case OPEN_NOTIFICATION: {
+            return Object.assign({}, state, {
+                notifications: state.notifications.map(notification => {
+                    if (notification.index === action.index) {
+                        notification.isOpen = true;
                     }
-                }}
-        case GET_CONFIG:
-            return {...state, ...{
-                    config: {
-                        headers: action.headers,
-                        port: action.port,
-                        path: action.path
-                    }
-                }}
+                    return notification;
+                })
+            })
+        }
+        case CHANGE_FORM_STATE: {
+            return Object.assign({}, state, {
+                form: {
+                    name: action.name,
+                    visible: action.visible
+                }
+            })
+        }
+        case FAIL_LOGIN: {
+            return Object.assign({}, state, {
+                failText: action.text
+            })
+        }
         default:
             return state;
     }

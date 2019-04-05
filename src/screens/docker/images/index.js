@@ -4,57 +4,65 @@ import {
 } from 'react-router-dom';
 import {connect} from "react-redux";
 import {reqImages} from '../../../actions/docker';
-import {Table, Divider, Tag, Button} from 'antd';
+import {Table, Divider, Tag, Button, notification, message} from 'antd';
 
 import CreateContainer from './createContainer';
 
 
-class Images extends React.Component {
+class Containers extends React.Component {
     componentDidMount() {
         this.props.getImages();
     }
 
+    openNotifContainer(record) {
+        const btn = (
+            <Button type="primary" size="small" onClick={() => notification.close(key)}>
+                Confirm
+            </Button>
+        );
+        const openNotification = () => {
+            notification.open({
+                message: 'Notification Title',
+                description: 'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
+                btn,
+                key: 'keyRequestContainer',
+                onClick: () => {
+                    console.log('Notification Clicked!');
+                },
+            });
+        };
+        openNotification();
+    }
+
+
+
     render() {
         return (
-            <div>
+            <div className={'mat-card'}>
                 <h1>Images</h1>
                 <Table pagination={false}
+                       bordered
+                       loading={this.props.docker.isRequestImages}
                        columns={[{
                            title: 'Image ID',
-                           dataIndex: 'id',
-                           key: 'id',
-                       }, {
-                           title: 'Repository',
+                           dataIndex: 'imageId',
+                           key: 'imageId',
+                       },  {
+                           title: 'Name',
                            dataIndex: 'name',
-                           key: 'repository',
-                           render: text => {
-                               const textSplit = text.split(':');
-                               if (textSplit.length === 0) {
-                                   return (<p>None</p>)
-                               }
-                               return (<p>{textSplit[0]}</p>)
-                           },
-                       }, {
+                           key: 'name'
+                       },  {
                            title: 'Tag',
-                           dataIndex: 'name',
-                           key: 'tag',
-                           render: text => {
-                               const textSplit = text.split(':');
-                               if (!textSplit[1]) {
-                                   return (<p>None</p>)
-                               }
-                               return (<p>{textSplit[1]}</p>)
-                           },
+                           dataIndex: 'tag',
+                           key: 'tag'
                        }, {
                            title: 'Size',
-                           dataIndex: 'megabyte',
-                           key: 'size',
-                           render: text => <p>{text}mb</p>
+                           dataIndex: 'size',
+                           key: 'size'
                        }, {
                            title: 'Created',
-                           key: 'date',
-                           dataIndex: 'date',
-                           render: date => (<p>{date.getDay()}-{date.getMonth()}-{date.getFullYear()}</p>),
+                           key: 'createAt',
+                           dataIndex: 'createAt'
                        }, {
                            title: 'Actions',
                            key: 'actions',
@@ -81,4 +89,4 @@ const mapDispatchToProps = dispatch => {
 };
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(Images);
+export default connect(mapStateToProps, mapDispatchToProps)(Containers);

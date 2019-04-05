@@ -5,18 +5,14 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {Table, Button} from 'antd';
 
 class Git extends React.Component {
-    componentWillMount() {
-        this.props.getProjects();
-    }
-
-    componentWillReceiveProps(nextProps) {
-        console.log(nextProps);
-    }
-
     state = {
         filteredInfo: null,
         sortedInfo: null,
-    };
+    }
+
+    componentWillMount() {
+        this.props.getProjects();
+    }
 
     handleChange = (pagination, filters, sorter) => {
         console.log('Various parameters', pagination, filters, sorter);
@@ -36,18 +32,14 @@ class Git extends React.Component {
 
     render() {
         const columns = [{
-            title: 'Name',
+            title: '',
             dataIndex: 'name',
             key: 'name'
         }];
-        console.log(this.props.store.projects);
         return (
             <div>
-                <h1>Git in project</h1>
-                <div className="table-operations">
-                    <Button type={'primary'} icon="download"> Clone </Button>
-                </div>
                 <div className="mat-card">
+                    <h1>Git in project</h1>
                     <Table pagination={false}
                            onRow={(record, rowIndex) => {
                                return {
@@ -55,8 +47,9 @@ class Git extends React.Component {
                                };
                            }}
                            columns={columns}
-                           dataSource={this.props.store.projects.repository ? this.props.store.projects.repository.map(item => {
+                           dataSource={this.props.store.projects.repository ? this.props.store.projects.repository.map((item, i) => {
                                return {
+                                   key: i,
                                    name: item
                                }
                            }) : []

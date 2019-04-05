@@ -1,5 +1,5 @@
 {
-  "name": "server-admin",
+  "name": "wellopilot",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,7 +9,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
-    "type": "git"
+    "type": "git",
+    "url": "ssh://git@gitlab.pilot-gps.ru:22122/fosteev/wellopilot.git"
   },
   "keywords": [],
   "author": "",
@@ -45,15 +46,21 @@
     "@fortawesome/react-fontawesome": "^0.1.3",
     "antd": "^3.11.0",
     "history": "^4.7.2",
+    "i18next": "^15.0.4",
+    "leaflet": "^1.4.0",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
+    "react-i18next": "^9.0.10",
+    "react-leaflet": "^2.2.1",
     "react-redux": "^5.1.0",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "react-router-redux": "^4.0.8",
     "react-scripts": "2.1.1",
+    "react-world-flags": "^1.3.0",
     "redux": "^4.0.1",
     "redux-devtools-extension": "^2.13.5",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "style-it": "^2.1.2"
   }
 }

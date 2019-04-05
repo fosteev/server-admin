@@ -1,7 +1,14 @@
 
 @import '~antd/dist/antd.css';
-p {
-    font-family: Roboto,"Helvetica Neue",sans-serif;
+
+html {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    padding: 0;
+    margin: 0;
 }
 
 #app {
@@ -31,9 +38,45 @@ p {
     justify-content: center;
 }
 
-.osIcon {
-    width: 200px !important;
-    height: 200px !important;
+.header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    z-index: 1;
+}
+
+.header-profile {
+    display: flex;
+    align-self: flex-end;
+    justify-content: center;
+    align-items: center;
+    margin-right: 2%;
+}
+
+.header-profile > p {
+    margin-top: 15%;
+    padding-right: 20px;
+    font-size: 20px;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+#mapid { height: 180px; }
+
+.ant-popover-inner-content {
+    padding: 0;
+}
+
+.flag {
+    margin-bottom: 4px;
+}
+
+.languages-select-item > span {
+    margin-left: 10px;
 }
 
 .mat-card {
@@ -46,34 +89,8 @@ p {
     margin: 5px;
 }
 
-.dashboard {
-    display: flex;
-    flex-direction: row;
-}
-
-.dashboard-config {
-    width: 600px;
-}
-
-.row {
-    display: flex;
-    background: rgba(236,239,241,.38);
-    height: 48px;
-}
-
-.row-content {
-    display: flex;
-    flex: 1;
-    flex-direction: row;
-    align-items: center;
-}
-
-.row-left {
-    display: flex;
-    flex: 1;
-}
-
-.row-right {
-    display: flex;
-    flex: 1;
+.column {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden !important;
 }

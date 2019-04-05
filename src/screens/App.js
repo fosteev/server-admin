@@ -1,42 +1,50 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {notification} from '../actions/state';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {connectLanguages} from '../connectLanguages';
 import {
     Link, Switch, Route
 } from 'react-router-dom';
-
 import {
-    Layout, Menu, Breadcrumb, Icon, message
+    Layout, Menu, Breadcrumb, Button
 } from 'antd';
 
-const { SubMenu } = Menu;
-const { Header, Content, Sider } = Layout;
 
-import Containers from './docker/containers';
+const {SubMenu, MenuItemGroup} = Menu;
+const {Header, Content, Sider} = Layout;
+
+import HeaderApp from './main/header';
+import MenuApp from './main/menu';
+
+import Notification from '../components/notification';
 import Images from './docker/images';
-import Dashboard from './dashboard';
+import Containers from './docker/containers';
 import Git from './git';
 import GitProject from './git/project';
 
+import {request} from "../actions/main";
+import {login} from "../actions/login";
+
 const routes = [{
-    name: 'dashboard',
-    path: '/dashboard',
-    component: Dashboard
-}, {
-    name: 'images',
+    name: 'Images',
     path: '/images',
+    isMenuItem: true,
     component: Images
 }, {
-    name: 'containers',
+    name: 'Containers',
     path: '/containers',
+    isMenuItem: true,
     component: Containers
 }, {
-    name: 'git',
+    name: 'Git',
     path: '/git',
+    isMenuItem: true,
     component: Git
 }, {
     name: 'git',
     path: '/git:name',
+    isMenuItem: false,
     component: GitProject
 }]
 
@@ -49,27 +57,24 @@ class App extends React.Component {
         return null;
     }
 
-    componentWillReceiveProps(nextProps) {
-        const {state} = nextProps;
-        const {messageBox, isLoading} = state;
+    componentDidMount() {
+        // this.props.setNotification('Page downloaded', 'Welcome download system.', 'download');
+    }
 
-        if (isLoading) {
-            message.loading('Response...', 5000);
-        } else {
-            message.destroy();
-        }
+    setFirstUpper(str) {
+        return str[0].toUpperCase() + str.substring(1);
+    }
 
-        if (messageBox.status) {
-            message.error(messageBox.text);
-        }
+    getBreadcrumb() {
+        const {t} = this.props;
+        return this.props.location.pathname.split('/').filter(path => path).map((path, index) => {
+            return <Breadcrumb.Item key={index}>{t(this.setFirstUpper(path))}</Breadcrumb.Item>
+        })
     }
 
     render() {
-        const {login} = this.props;
-        const containers = this.getRoute('containers');
-        const images = this.getRoute('images');
-        const dashboard = this.getRoute('dashboard');
-        const git = this.getRoute('git');
+        const {image, name} = this.props.login;
+        const map = this.getRoute('map');
         const routers = routes.map((route, index) => {
             return (<Route key={index} path={route.path} component={route.component}/>)
         });
@@ -78,68 +83,67 @@ class App extends React.Component {
         if (searchIndex !== -1) {
             path = path.slice(0, searchIndex);
         }
-        return (
+
+        return (<Layout>
+            <HeaderApp/>
             <Layout>
-                <Header className="header">
-                </Header>
-                <Layout>
-                    <Sider width={200} style={{ background: '#fff' }}>
-                        <Menu
-                            mode="inline"
-                            defaultSelectedKeys={[path]}
-                            style={{ height: '100%', borderRight: 0 }}
-                        >
-                            <Menu.Item key={dashboard.name}>
-                                <Link to={dashboard.path}>
-                                    <FontAwesomeIcon icon={['fas', 'desktop']} />
-                                    <span> Dashboard</span>
-                                </Link>
-                            </Menu.Item>
-                            <SubMenu key="docker" title={<span><FontAwesomeIcon icon={['fab', 'docker']} /> Docker</span>}>
-                                <Menu.Item key={containers.name}>
-                                    <Link to={containers.path}>
-                                        <FontAwesomeIcon icon={['fas', 'server']} />
-                                        <span> Containers</span>
-                                    </Link>
-                                </Menu.Item>
-                                <Menu.Item key={images.name}>
-                                    <Link to={images.path}>
-                                        <FontAwesomeIcon icon={['fas', 'save']} />
-                                        <span> Images</span>
-                                    </Link>
-                                </Menu.Item>
-                            </SubMenu>
-                            <Menu.Item key={git.name}>
-                                <Link to={git.path}>
-                                    <FontAwesomeIcon icon={['fab', 'git']} />
-                                    <span> Git</span>
-                                </Link>
-                            </Menu.Item>
-                        </Menu>
-                    </Sider>
-                    <Layout style={{ padding: '0 24px 24px' }}>
-                        <Content>
-                            <Switch>
-                                {routers}
-                            </Switch>
-                        </Content>
-                    </Layout>
+                <Sider width={200}>
+                    <MenuApp router={routes.filter(route => route.isMenuItem)}/>
+                </Sider>
+                <Layout style={{padding: '0 24px 24px'}}>
+                    <Breadcrumb style={{margin: '16px 0'}}>
+                        {this.getBreadcrumb()}
+                    </Breadcrumb>
+                    <Content style={{margin: 0, minHeight: 280}}>
+                        <Switch>
+                            {routers}
+                        </Switch>
+                    </Content>
+                    <Notification/>
                 </Layout>
             </Layout>
-        )    }
+        </Layout>)
+
+        if (this.props.login.isAuthenticated) {
+
+        }
+
+        if (window.location.pathname !== '/login') {
+            const {history} = this.props;
+            request('users/auth', 'GET').then(resp => {
+                this.props.saveUser(resp);
+                history.replace(window.location.pathname);
+            }).catch(() => {
+                history.replace('/login');
+            })
+            return (
+                <Layout style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}>
+                    <Button type="primary" shape="circle" loading />
+                </Layout>
+            )
+        }
+
+        return null;
+    }
 }
 
 const mapStateToProps = state => {
     return {
         login: state.login,
-        state: state.state
+        theme: state.themes.getTheme()
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
+        setNotification: (title, text, index) => dispatch(notification(title, text, index)),
+        saveUser: (data) => dispatch(login(data))
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(connectLanguages(App));
 
