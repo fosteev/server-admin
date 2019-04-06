@@ -5,7 +5,8 @@ import {
     RESPONSE_CONTAINER,
     FAIL_CONTAINER,
     REQUEST_CONTAINERS,
-    REQUEST_IMAGES
+    REQUEST_IMAGES,
+    GET_DOCKER_FILES
 } from '../actions/docker';
 
 const initialState = {
@@ -22,7 +23,8 @@ const initialState = {
         inPort: null,
         containerId: null,
         fail: {}
-    }
+    },
+    dockerFiles: []
 };
 
 export default function docker(state = initialState, action) {
@@ -58,7 +60,6 @@ export default function docker(state = initialState, action) {
 
             });
         case RESPONSE_CONTAINER:
-            console.log('set requeest false');
             return Object.assign({}, state, {
                 sendContainer: {
                     ...state.sendContainer,
@@ -73,6 +74,10 @@ export default function docker(state = initialState, action) {
                     isRequest: false,
                     fail: action.fail
                 },
+            });
+        case GET_DOCKER_FILES:
+            return Object.assign({}, state, {
+                dockerFiles: action.data
             });
         default:
             return state;

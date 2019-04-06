@@ -5,10 +5,12 @@ export const RESPONSE_CONTAINER = 'RESPONSE_CONTAINER';
 export const FAIL_CONTAINER = 'FAIL_CONTAINER';
 export const REQUEST_CONTAINERS = 'REQUEST_CONTAINERS';
 export const REQUEST_IMAGES = 'REQUEST_IMAGES';
+export const GET_DOCKER_FILES = 'GET_DOCKER_FILES';
 
 import {
     message
 } from 'antd';
+
 
 export function requestContainers() {
     return {
@@ -122,4 +124,15 @@ export function removeContainer(container) {
     }
 }
 
+export function getDockerFiles(projectName) {
+    return dispatch => {
+        request(`repository/dockerfiles/${projectName}`, 'GET')
+            .then(resp => {
+                dispatch({
+                    type: GET_DOCKER_FILES,
+                    data: resp
+                })
+            })
+    }
+}
 

@@ -1,8 +1,12 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {getProject} from '../../../actions/git';
+import {getDockerFiles} from '../../../actions/docker';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {Table, Button, Timeline, Tree, Skeleton} from 'antd';
+import {Typography, Empty, Timeline, Tree, Skeleton} from 'antd';
+import {TreeNodes} from '../../../components';
+
+const {Title, Paragraph} = Typography;
 
 const {TreeNode} = Tree;
 
@@ -13,7 +17,8 @@ class GitProject extends React.Component {
         branches: [],
         checkedBranches: [],
         history: [],
-        changes: []
+        changes: [],
+        dockerFiles: []
     }
 
     componentWillMount() {
@@ -22,28 +27,35 @@ class GitProject extends React.Component {
             name: projectName
         })
         this.props.getProject(projectName);
+        this.props.getDockerFiles(projectName);
     }
 
     componentWillReceiveProps(nextProps) {
         const {statusText, gitBranches, changes, history} = nextProps.store;
-      
+        const {dockerFiles} = nextProps.docker;
+
         this.setState({
             status: statusText,
             branches: gitBranches,
             checkedBranches: gitBranches ? gitBranches.filter(text => text.indexOf('*') !== -1) : [],
             changes: changes,
-            history: history
+            history: history,
+            dockerFiles: dockerFiles
         })
     }
 
     getStatus() {
-        return this.state.status ? this.state.status.map((text, i) => <p key={i}>{text}</p>) : null;
+        return this.state.status ? this.state.status.map((text, i) => <Paragraph key={i}>{text}</Paragraph>) : null;
     }
 
     getBranches() {
         const {branches} = this.state;
         if (!branches) {
-            return null;
+            return <Skeleton active/>;
+        }
+
+        if (branches.length === 0) {
+            return <Empty/>
         }
 
         const getTreeNodes = () => branches
@@ -66,66 +78,37 @@ class GitProject extends React.Component {
     getChanges() {
         const {changes} = this.state;
         if (!changes) {
-            return null;
+            return <Skeleton active/>;
         }
 
-        let tree = [];
-
-        changes.forEach(item => {
-            item.split('/').forEach((text, i, arr) => {
-                if (arr[i - 1]) {
-
-                    const pushParent = (text, parentName, arr) => {
-                        arr.forEach(item => {
-                            if (item.name === parentName) {
-
-                                if (!item.children.find(child => child.name === text)) {
-                                    item.children.push({
-                                        name: text,
-                                        children: []
-                                    })
-                                }
-
-                            } else {
-                                pushParent(text, parentName, item.children);
-                            }
-                        })
-                    }
-                    pushParent(text, arr[i - 1], tree);
-
-                } else {
-                    if (!tree.find(item => item.name === text)) {
-                        tree.push({
-                            name: text,
-                            children: []
-                        })
-                    }
-                }
-            })
-        });
-
-        let uniqKey = 0;
-
-        const getChildrens = node => {
-            ++uniqKey;
-            const {children} = node;
-            const isLeaf = children.length === 0;
-            return (<TreeNode title={node.name} key={uniqKey} isLeaf={isLeaf}>
-                {!isLeaf ? children.map(child => getChildrens(child)) : null}
-            </TreeNode>)
+        if (changes.length === 0) {
+            return <Empty/>
         }
 
-        const DirectoryTree = Tree.DirectoryTree;
+        return <TreeNodes data={changes}/>
+    }
 
-        return <DirectoryTree defaultExpandAll>
-            {tree.map(root => getChildrens(root))}
-        </DirectoryTree>
+    getDockerFiles() {
+        const {dockerFiles} = this.state;
+        if (!dockerFiles) {
+            return <Skeleton active={true}/>
+        }
+
+        if (dockerFiles.length === 0) {
+            return <Empty/>
+        }
+
+        return <TreeNodes data={dockerFiles}/>
     }
 
     getTimeLineHistory() {
         const {history} = this.state;
         if (!history) {
-            return null;
+            return <Skeleton active/>;
+        }
+
+        if (history.length === 0) {
+            return <Empty/>
         }
         const timeLine = history.map((commit, index) => {
             return <Timeline.Item key={index}>{commit}</Timeline.Item>
@@ -139,19 +122,23 @@ class GitProject extends React.Component {
         return (
             <div>
                 <div className="mat-card">
-                    <h1>{this.state.name}</h1>
+                    <Title level={3}>{this.state.name}</Title>
                     {this.getStatus()}
                 </div>
                 <div className="mat-card">
-                    <h1>Branches</h1>
+                    <Title level={3}>Docker</Title>
+                    {this.getDockerFiles()}
+                </div>
+                <div className="mat-card">
+                    <Title level={3}>Branches</Title>
                     {this.getBranches()}
                 </div>
                 <div className="mat-card">
-                    <h1>Changes</h1>
+                    <Title level={3}>Changes</Title>
                     {this.getChanges()}
                 </div>
                 <div className="mat-card">
-                    <h1>History</h1>
+                    <Title level={3}>History</Title>
                     {this.getTimeLineHistory()}
                 </div>
             </div>
@@ -162,13 +149,15 @@ class GitProject extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        store: state.git.project
+        store: state.git.project,
+        docker: state.docker
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return ({
-        getProject: (name) => dispatch(getProject(name))
+        getProject: (name) => dispatch(getProject(name)),
+        getDockerFiles: (name) => dispatch(getDockerFiles(name))
     })
 };
 //export default Dashboard;
