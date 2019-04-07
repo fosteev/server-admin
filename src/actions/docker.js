@@ -98,29 +98,55 @@ export function startContainer(params) {
 
 }
 
+function reqStopContainer(container) {
+    return new Promise(resolve => {
+        request(`docker/containers/${container.id}`, 'PUT')
+            .then(resp => resolve(resp))
+    })
+}
+
 export function stopContainer(container) {
     return dispatch => {
         dispatch(requestContainer(container));
-        request(`docker/containers/${container.id}`, 'PUT')
-            .then(resp => {
-                message.destroy();
-                message.success('Container has been stop, id: ' + resp, 5);
-                dispatch(responseContainer(resp));e
-                dispatch(reqContainers());
-            });
+        reqStopContainer.then(resp => {
+            message.destroy();
+            message.success('Container has been stop, id: ' + resp, 5);
+            dispatch(responseContainer(resp));
+            dispatch(reqContainers());
+        })
     }
+}
+
+function reqRemoveContanier(container) {
+    return new Promise(resolve => {
+        request(`docker/containers/${container.id}`, 'DELETE')
+            .then(resp => resolve(resp))
+    })
 }
 
 export function removeContainer(container) {
     return dispatch => {
         dispatch(requestContainer(container));
-        request('docker/containers/${container.id}', 'DELETE')
-            .then(resp => {
+        reqRemoveContanier().then(resp => {
+            message.destroy();
+            message.success('Container has been removed, id: ' + resp, 5);
+            dispatch(responseContainer(resp));
+            dispatch(reqContainers());
+        })
+    }
+}
+
+export function stopAndRemoveContainer(container) {
+    return dispatch => {
+        dispatch(requestContainer(container));
+        reqStopContainer(container).then(resp => {
+            reqRemoveContanier(container).then(resp => {
                 message.destroy();
                 message.success('Container has been removed, id: ' + resp, 5);
                 dispatch(responseContainer(resp));
                 dispatch(reqContainers());
             })
+        })
     }
 }
 

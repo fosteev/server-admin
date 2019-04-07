@@ -55,7 +55,8 @@ export default function docker(state = initialState, action) {
                 sendContainer: {
                     ...state.sendContainer,
                     isRequest: true,
-                    ...action.container
+                    ...action.container,
+                    fail: {}
                 }
 
             });
