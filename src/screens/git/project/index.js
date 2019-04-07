@@ -2,9 +2,10 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {getProject} from '../../../actions/git';
 import {getDockerFiles} from '../../../actions/docker';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {Typography, Empty, Timeline, Tree, Skeleton} from 'antd';
+import {getFileContent} from '../../../actions/file';
+import {Typography, Empty, Timeline, Tree, Skeleton, Modal} from 'antd';
 import {TreeNodes} from '../../../components';
+import Highlight from 'react-highlight';
 
 const {Title, Paragraph} = Typography;
 
@@ -18,7 +19,9 @@ class GitProject extends React.Component {
         checkedBranches: [],
         history: [],
         changes: [],
-        dockerFiles: []
+        dockerFiles: [],
+        isModalVisible: false,
+        modalHeaderText: ''
     }
 
     componentWillMount() {
@@ -85,7 +88,20 @@ class GitProject extends React.Component {
             return <Empty/>
         }
 
-        return <TreeNodes data={changes}/>
+        return <TreeNodes data={changes}
+                          contextMenu={[{
+                              name: 'View',
+                              icon: 'file',
+                              key: 'view',
+                              onClick: (record) => {
+                                  this.setState({
+                                      isModalVisible: true,
+                                      modalHeaderText: 'Docker file'
+                                  })
+                                  const {pathFile} = record;
+                                  this.props.getFileContent(`${this.state.name.replace('-', '=')}-${pathFile.replaceAll('/', '-')}`);
+                              }
+                          }]}/>
     }
 
     getDockerFiles() {
@@ -98,7 +114,31 @@ class GitProject extends React.Component {
             return <Empty/>
         }
 
-        return <TreeNodes data={dockerFiles}/>
+        return <TreeNodes
+            contextMenu={[{
+                name: 'View',
+                icon: 'file',
+                key: 'view',
+                onClick: (record) => {
+                    this.setState({
+                        isModalVisible: true,
+                        modalHeaderText: 'Docker file'
+                    })
+                    const {pathFile} = record;
+                    this.props.getFileContent(`${this.state.name}-${pathFile.replaceAll('/', '-')}`);
+                }
+            }, {
+                name: 'Run build',
+                key: 'build',
+                icon: 'play-circle'
+            }]}
+            data={dockerFiles}/>
+    }
+
+    onCancelModal = () => {
+        this.setState({
+            isModalVisible: false
+        })
     }
 
     getTimeLineHistory() {
@@ -141,6 +181,23 @@ class GitProject extends React.Component {
                     <Title level={3}>History</Title>
                     {this.getTimeLineHistory()}
                 </div>
+                <Modal
+                    title={this.state.modalHeaderText}
+                    visible={this.state.isModalVisible}
+                    centered={true}
+                    //onOk={this.handleOk}
+                    okButtonProps={{
+                        style: {
+                            display: 'none'
+                        }
+                    }}
+                    onCancel={this.onCancelModal}
+                >
+                    <Highlight languages={['javascript']}>
+                        {this.props.file.content}
+                    </Highlight>
+
+                </Modal>
             </div>
         )
     }
@@ -150,14 +207,16 @@ class GitProject extends React.Component {
 const mapStateToProps = state => {
     return {
         store: state.git.project,
-        docker: state.docker
+        docker: state.docker,
+        file: state.file
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return ({
         getProject: (name) => dispatch(getProject(name)),
-        getDockerFiles: (name) => dispatch(getDockerFiles(name))
+        getDockerFiles: (name) => dispatch(getDockerFiles(name)),
+        getFileContent: (file) => dispatch(getFileContent(file))
     })
 };
 //export default Dashboard;

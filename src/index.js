@@ -10,6 +10,11 @@ import { fas } from '@fortawesome/free-solid-svg-icons'
 library.add(fab, fas);
 import './i18n';
 
+String.prototype.replaceAll = function(search, replacement) {
+    let target = this;
+    return target.split(search).join(replacement);
+};
+
 
 ReactDOM.render(<Root />, document.getElementById('app'));
 

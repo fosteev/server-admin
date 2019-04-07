@@ -122,7 +122,8 @@ class TreeNodes extends React.Component {
                 >
                     {this.getTreeItems()}
                 </DirectoryTree>
-                <Popup onClick={record => console.log(record)} {...this.state.popup}/>
+                <Popup menu={this.props.contextMenu}
+                       {...this.state.popup}/>
             </div>
         )
     }

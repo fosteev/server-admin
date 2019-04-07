@@ -61,6 +61,7 @@
     "redux": "^4.0.1",
     "redux-devtools-extension": "^2.13.5",
     "redux-thunk": "^2.3.0",
-    "style-it": "^2.1.2"
+    "style-it": "^2.1.2",
+    "react-highlight": "^0.12.0"
   }
 }

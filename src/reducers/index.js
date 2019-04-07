@@ -7,6 +7,7 @@ import languages from './languages';
 import themes from './themes';
 import git from './git';
 import docker from './docker';
+import file from './file';
 
 export default combineReducers({
     routing: routerReducer,
@@ -15,5 +16,6 @@ export default combineReducers({
     languages,
     themes,
     git,
-    docker
+    docker,
+    file
 });
