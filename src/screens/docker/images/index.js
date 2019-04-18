@@ -1,10 +1,7 @@
 import React, {Component} from 'react';
-import {
-    Link
-} from 'react-router-dom';
 import {connect} from "react-redux";
 import {reqImages} from '../../../actions/docker';
-import {Table, Divider, Tag, Button, notification, message} from 'antd';
+import {Table, Tag, notification} from 'antd';
 
 import CreateContainer from './createContainer';
 
@@ -15,25 +12,29 @@ class Containers extends React.Component {
     }
 
     openNotifContainer(record) {
-        const btn = (
-            <Button type="primary" size="small" onClick={() => notification.close(key)}>
-                Confirm
-            </Button>
-        );
+        const {dockerResponse} = record;
+        let text = dockerResponse;
+
+        if (dockerResponse.search('is already in use by ') != -1) {
+            text = `It seems that the container name is used`
+        }
+
         const openNotification = () => {
-            notification.open({
-                message: 'Notification Title',
-                description: 'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
-                btn,
-                key: 'keyRequestContainer',
-                onClick: () => {
-                    console.log('Notification Clicked!');
-                },
+            notification['error']({
+                message: 'Container start failed',
+                description: text,
+                key: 'keyRequestContainer'
             });
         };
         openNotification();
     }
 
+    componentWillReceiveProps(nextProps, nextContext) {
+        const {sendContainer} = nextProps.docker;
+        if (sendContainer && sendContainer.fail.dockerResponse) {
+            this.openNotifContainer(sendContainer.fail);
+        }
+    }
 
 
     render() {

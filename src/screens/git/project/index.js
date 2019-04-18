@@ -6,6 +6,7 @@ import {getFileContent} from '../../../actions/file';
 import {Typography, Empty, Timeline, Tree, Skeleton, Modal} from 'antd';
 import {TreeNodes} from '../../../components';
 import Highlight from 'react-highlight';
+import BuildImage from "./buildImage";
 
 const {Title, Paragraph} = Typography;
 
@@ -21,7 +22,10 @@ class GitProject extends React.Component {
         changes: [],
         dockerFiles: [],
         isModalVisible: false,
-        modalHeaderText: ''
+        modalHeaderText: '',
+
+        buildImageShow: false,
+        buildImagePath: null
     }
 
     componentWillMount() {
@@ -130,7 +134,16 @@ class GitProject extends React.Component {
             }, {
                 name: 'Run build',
                 key: 'build',
-                icon: 'play-circle'
+                icon: 'play-circle',
+                onClick: (record) => {
+                    const {pathFile} = record;
+                    console.log(`${this.state.name}-${pathFile.replaceAll('/', '-')}`);
+                    this.setState({
+                        buildImageShow: true,
+                        buildImagePath: `${this.state.name}-${pathFile.replaceAll('/', '-')}`
+                    });
+                    //this.props.getFileContent(`${this.state.name}-${pathFile.replaceAll('/', '-')}`);
+                }
             }]}
             data={dockerFiles}/>
     }
@@ -198,6 +211,12 @@ class GitProject extends React.Component {
                     </Highlight>
 
                 </Modal>
+
+                <BuildImage visible={this.state.buildImageShow}
+                            path={this.state.buildImagePath}
+                            onClose={() => this.setState({
+                                buildImageShow: false
+                            })}/>
             </div>
         )
     }

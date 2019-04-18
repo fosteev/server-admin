@@ -6,7 +6,9 @@ import {
     FAIL_CONTAINER,
     REQUEST_CONTAINERS,
     REQUEST_IMAGES,
-    GET_DOCKER_FILES
+    GET_DOCKER_FILES,
+    REQUEST_BUILD_IMAGE,
+    RESPONSE_BUILD_IMAGE
 } from '../actions/docker';
 
 const initialState = {
@@ -22,6 +24,10 @@ const initialState = {
         outPort: null,
         inPort: null,
         containerId: null,
+        fail: {}
+    },
+    buildImage: {
+        isRequest: false,
         fail: {}
     },
     dockerFiles: []
@@ -79,6 +85,18 @@ export default function docker(state = initialState, action) {
         case GET_DOCKER_FILES:
             return Object.assign({}, state, {
                 dockerFiles: action.data
+            });
+        case REQUEST_BUILD_IMAGE:
+            return Object.assign({}, state, {
+                buildImage: {
+                    isRequest: true
+                }
+            });
+        case RESPONSE_BUILD_IMAGE:
+            return Object.assign({}, state, {
+                buildImage: {
+                    isRequest: false
+                }
             });
         default:
             return state;

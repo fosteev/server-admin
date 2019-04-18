@@ -6,6 +6,8 @@ export const FAIL_CONTAINER = 'FAIL_CONTAINER';
 export const REQUEST_CONTAINERS = 'REQUEST_CONTAINERS';
 export const REQUEST_IMAGES = 'REQUEST_IMAGES';
 export const GET_DOCKER_FILES = 'GET_DOCKER_FILES';
+export const REQUEST_BUILD_IMAGE = 'REQUEST_BUILD_IMAGE';
+export const RESPONSE_BUILD_IMAGE = 'RESPONSE_BUILD_IMAGE';
 
 import {
     message
@@ -162,3 +164,27 @@ export function getDockerFiles(projectName) {
     }
 }
 
+function requestBuildImage() {
+    message.loading('Building in progress..', 0);
+    return {
+        type: REQUEST_BUILD_IMAGE
+    }
+}
+
+function responseBuildImage(data) {
+    message.destroy();
+    message.success('Image build success', 5);
+    return {
+        type: RESPONSE_BUILD_IMAGE,
+        data: data
+    }
+}
+
+export function reqBuildImage(params) {
+    return dispatch => {
+        dispatch(requestBuildImage());
+        request('docker/images', 'POST', params).then(resp => {
+            dispatch(responseBuildImage(resp))
+        })
+    }
+}
