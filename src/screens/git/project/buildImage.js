@@ -4,18 +4,20 @@ import {
 } from 'antd';
 import {connect} from "react-redux";
 import {reqBuildImage} from '../../../actions/docker';
-//import {style} from './style';
-
 
 class DrawerForm extends React.Component {
     state = {
         actionMessage: '',
+        path: '',
         visible: false
     };
 
     componentWillReceiveProps(nextProps, nextContext) {
         if (nextProps.visible) {
             this.showDrawer();
+            this.setState({
+                path: nextProps.path
+            })
         }
     }
 
@@ -41,60 +43,42 @@ class DrawerForm extends React.Component {
             if (err) {
                 throw new Error('Received values of form');
             }
-            console.log(values);
+            const {path, name} = values;
+            const pathToFile = path.replaceAll('/', '-');
+            console.log(pathToFile);
+            console.log(name);
         });
     }
 
     render() {
         const {getFieldDecorator} = this.props.form;
         return (
-            <Drawer
-                title="Build image"
-                width={720}
-                onClose={this.onClose}
-                visible={this.state.visible}
-                //style={style.drawer}
+            <Drawer title="Build image"
+                    width={720}
+                    onClose={this.onClose}
+                    visible={this.state.visible}
             >
                 <Form layout="vertical" hideRequiredMark onSubmit={this.handleSubmit}>
                     <Row gutter={16}>
                         <Col span={12}>
-                            <Form.Item label="Container name">
-                                {getFieldDecorator('name', {
+                            <Form.Item label="Executable file">
+                                {getFieldDecorator('path', {
                                     rules: [{
                                         required: true,
                                         message: 'Please enter container name'
                                     }],
-                                })(<Input placeholder="Please enter container name"/>)}
+                                    initialValue: this.state.path.replaceAll('-', '/')
+                                })(<Input disabled placeholder="Please enter container name"/>)}
                             </Form.Item>
                         </Col>
                         <Col span={12}>
                             <Form.Item label="Image name">
-                                {getFieldDecorator('image', {
+                                {getFieldDecorator('name', {
                                     rules: [{
                                         required: true,
                                         message: 'Please enter image name',
-                                    }],
-                                    initialValue: this.props.path
-                                })(<Input disabled={true}  placeholder="Please enter image name"/>)}
-
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row gutter={16}>
-                        <Col span={12}>
-                            <Form.Item label="container port">
-                                {getFieldDecorator('inPort', {
-                                    rules: [{required: true, message: 'Please enter container port'}],
-                                })(
-                                    <InputNumber  placeholder="Please enter container port"/>
-                                )}
-                            </Form.Item>
-                        </Col>
-                        <Col span={12}>
-                            <Form.Item label="exposed_port">
-                                {getFieldDecorator('outPort', {
-                                    rules: [{required: true, message: 'Please enter exposed port'}],
-                                })(<InputNumber placeholder="Please enter exposed port"/>)}
+                                    }]
+                                })(<Input placeholder="Please enter image name"/>)}
                             </Form.Item>
                         </Col>
                     </Row>
